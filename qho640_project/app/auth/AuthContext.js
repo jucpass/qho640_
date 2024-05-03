@@ -1,109 +1,8 @@
-/* working but not managing user roles
-"use client";
-import { useContext, useEffect, createContext, useState } from "react";
-import { signInWithPopup, signOut, onAuthStateChanged, GoogleAuthProvider } from "firebase/auth";
-import {auth} from "../firebaseConfig";
-
-const AuthContext = createContext()
-
-export const AuthContextProvider = ({children}) => {
-    const [user, setUser] = useState(null);
-
-    const googleSignIn = () => {
-        const provider = new GoogleAuthProvider()
-        signInWithPopup(auth, provider)
-    }
-
-    const logOut = () => {
-        signOut(auth)
-    }
-
-    useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth,(currentUser) =>{
-            setUser(currentUser)
-        })
-        return() => unsubscribe()
-    }, [user]);
-
-    return(<AuthContext.Provider value={{user, googleSignIn, logOut}}>{children}</AuthContext.Provider>)
-}
-
-export const UserAuth = () => {
-    return useContext(AuthContext)
-}
-*/
-
-/*
-"use client";
-import { useContext, useEffect, createContext, useState } from "react";
-import { signInWithPopup, signOut, onAuthStateChanged, GoogleAuthProvider, createUserWithEmailAndPassword } from "firebase/auth";
-import { doc, getDoc, getFirestore } from "firebase/firestore";
-import {auth} from "../firebaseConfig";
-
-
-const AuthContext = createContext()
-
-export const AuthContextProvider = ({children}) => {
-    const [user, setUser] = useState(null);
-    const [role, setRole] = useState(null);
-    const firestore = getFirestore();
-
-    const googleSignIn = () => {
-        const provider = new GoogleAuthProvider()
-        signInWithPopup(auth, provider)
-    }
-
-    const logOut = () => {
-        signOut(auth)
-    }
-
-    const signUp = async (email, password) => {
-        try {
-            const auth = getAuth();
-            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-            console.log("User created:", userCredential.user);
-        } catch (error) {
-            console.error("Error signing up:", error);
-            throw error; 
-        }
-    };
-
-    useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth,(currentUser) =>{
-            if (currentUser){
-                setUser(currentUser)
-
-                const userRef = doc(firestore, "users", currentUser.uid);
-                const userDoc = getDoc(userRef);
-                if (userDoc.exists()){
-                    setRole(userDoc.data().role);
-                }else{
-                    setRole("user");
-                }
-            }else{
-                setUser(null);
-                setRole(null);  
-            }
-
-        });
-        return() => unsubscribe()
-    }, []);
-
-    return(
-    <AuthContext.Provider value={{user, role, googleSignIn, logOut, signUp}}>
-        {children}
-    </AuthContext.Provider>)}
-
-export const UserAuth = () => {
-    return useContext(AuthContext)
-}
-*/
 
 "use client";
 import React, { useContext, useEffect, createContext, useState } from "react";
 import { signInWithPopup, signOut, onAuthStateChanged, GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { doc, getDoc, setDoc, getFirestore } from "firebase/firestore";
-
 import { auth } from "../firebaseConfig";  // Assuming this is correctly configured
 
 const AuthContext = createContext();
@@ -111,6 +10,8 @@ const AuthContext = createContext();
 export const AuthContextProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [role, setRole] = useState(null);
+    const [loading, setLoading] = useState(true);
+
     const firestore = getFirestore();
 
     const googleSignIn = () => {
@@ -169,9 +70,8 @@ export const AuthContextProvider = ({ children }) => {
         const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
             if (currentUser) {
                 setUser(currentUser);
-
                 const userRef = doc(firestore, "users", currentUser.uid);
-                const userDoc = await getDoc(userRef);  // Await the promise
+                const userDoc = await getDoc(userRef); 
                 if (userDoc.exists()) {
                     setRole(userDoc.data().role);
                 } else {
@@ -181,14 +81,14 @@ export const AuthContextProvider = ({ children }) => {
                 setUser(null);
                 setRole(null);
             }
+            setLoading(false); // Ensure loading is set to false here
         });
         return () => unsubscribe();
-    }, //[auth, firestore]); 
-    [firestore]);
+    }, [firestore]);
 
     return (
         <AuthContext.Provider value={{ user, role, googleSignIn, logOut, signUp, signInWithEmail }}>
-            {children}
+            {!loading && children}
         </AuthContext.Provider>
     );
 };

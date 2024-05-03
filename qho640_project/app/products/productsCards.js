@@ -4,20 +4,24 @@ import useProducts from '../database/products';
 import Image from 'next/image';
 import { UserAuth } from '../auth/AuthContext'; 
 import { db } from '../firebaseConfig';
+import { updateDoc, deleteDoc, doc } from "firebase/firestore";
 
 function ProductCards() {
-    const products = useProducts();
+    const { products, refreshProducts } = useProducts();
     const { role } = UserAuth();
     const [editingStates, setEditingStates] = useState({});
 
     const handleDelete = async (productId) => {
         if (role === 'admin') {
+            console.log('Deleting product with ID: ', productId);
             // Confirmation dialog
             if (window.confirm('Are you sure you want to delete this product?')) {
                 try {
-                    await db.collection('productsCategories').doc(productId).delete();
+                    const docRef = doc(db, 'productsCategories', productId);
+                    await deleteDoc(docRef);
                     console.log('Product successfully deleted!');
                     alert('Product has been successfully deleted.'); 
+                    refreshProducts(); // Refresh the product list after deletion
                 } catch (error) {
                     console.error('Error removing product: ', error);
                     alert('Failed to delete product.'); 
@@ -52,14 +56,18 @@ function ProductCards() {
 
     const saveChanges = async (productId) => {
         const editedProduct = editingStates[productId];
+        console.log('Saving changes for product: ', editedProduct);
         try {
-            await db.collection('productsCategories').doc(productId).update(editedProduct);
+            const docRef = doc(db, 'productsCategories', productId);
+            await updateDoc(docRef, editedProduct);
             console.log('Product updated successfully');
+            refreshProducts(); // Refresh the product list after updating
             setEditingStates(prev => {
                 const newState = { ...prev };
                 delete newState[productId];
                 return newState;
-            });
+            }
+        );
         } catch (error) {
             console.error('Error updating product: ', error);
         }
@@ -69,7 +77,7 @@ function ProductCards() {
     return (
         <div className="cards-container">
             {products.map((product, index) => (
-                <div key={product.id || index} className="card"> {/* Ensure unique key, prefer product.id if available */}
+                <div key={product.id || index} className="card"> 
                     <div className="card-image">
                         <figure className="image is-2by3">
                             <Image 
@@ -85,7 +93,7 @@ function ProductCards() {
                         <div className="media">
                             <div className="media-content">
                                 {editingStates[product.id]?.isEditing ? (
-                                    <React.Fragment> {/* Use React.Fragment for grouping */}
+                                    <React.Fragment>
                                         <input
                                             className="input"
                                             value={editingStates[product.id].Model}
@@ -139,55 +147,3 @@ function ProductCards() {
 }
 
 export default ProductCards;
-
-
-
-/*
-    return (
-        <div className="cards-container"> 
-        {products.map((product, index) => (
-            
-            <div key={index} className="card">
-                <div className="card-image">
-                    <figure className="image is-2by3">
-                        <Image 
-                            src={product.Image}
-                            alt={product.Model}
-                            width={50}
-                            height={80}
-                        />
-                    </figure>
-                </div>
-
-                <div className="card-content">
-                    <div className="media">
-                        <div className="media-content">
-                            <p className="title is-4">{product.Model}</p>
-                            <p className="subtitle is-6">{product.Make}</p>
-                        </div>
-                    </div>
-                    <div className="content">
-                        <p>Features: {product.Features}</p>
-                        <br />
-                        <p>Price: ${product.Price}</p>
-                        {role === 'admin' && (
-
-                            <div className="buttons">
-                                <button className="button is-warning" onClick={() => handleEdit(product.id)}>Edit</button>
-                                <button className="button is-danger" onClick={() => handleDelete(product.id)}>Delete</button>
-                            </div>
-                        )}
-                        {role !== 'admin' && (
-                            <button className="button is-success">Add to Cart</button>
-                        )}
-                    </div>
-                </div>
-            </div>
-        ))}
-    </div>
-);
-}
-
-
-export default ProductCards;
-*/

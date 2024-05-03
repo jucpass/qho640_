@@ -43,8 +43,8 @@ export default function AddItemPage() {
     return (
         <section className="section">
         <div className="columns">
-        <div class="column"></div>
-        <div class="column">
+        <div className="column"></div>
+        <div className="column">
             
         <h1 className="title has-text-centered">Add Item</h1>
         <div className="cards-container">
@@ -98,7 +98,7 @@ export default function AddItemPage() {
                             </div>
             </div>
             </div> 
-            <div class="column"></div>
+            <div className="column"></div>
             </div>
         </section>
     );

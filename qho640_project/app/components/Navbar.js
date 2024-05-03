@@ -65,7 +65,7 @@ const Navbar = () => {
                         <Link href="/addItem" className="navbar-item">
                             Products Management
                         </Link>
-                        <Link href="/usersManagement" className="navbar-item">
+                        <Link href="/userManagement" className="navbar-item">
                         User Management
                         </Link>
                     </>

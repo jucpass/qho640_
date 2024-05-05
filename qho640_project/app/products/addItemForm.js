@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { db } from '../firebaseConfig'; // Ensure you have this Firebase config file
+import { db } from '../firebaseConfig'; 
 import { collection, addDoc } from "firebase/firestore"; 
 import { UserAuth } from '../auth/AuthContext'; 
 

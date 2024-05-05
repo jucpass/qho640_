@@ -1,22 +1,24 @@
-import React, { useState } from 'react';
+import React from 'react';
 import UserCard from '../app/users/usersCards';
 import useUsers from '../app/database/users';
-import { doc, updateDoc } from 'firebase/firestore';
+import { doc, deleteDoc } from 'firebase/firestore';
 import { db } from '../app/firebaseConfig';
 
 const UserList = () => {
     const { users, refreshUsers } = useUsers();
-    const [editingUserId, setEditingUserId] = useState(null);
 
-    const handleEditUser = (user) => {
-        setEditingUserId(user ? user.id : null);
-    };
-
-    const saveUserChanges = async (userId, updatedDetails) => {
-        const userRef = doc(db, 'users', userId);
-        await updateDoc(userRef, updatedDetails);
-        setEditingUserId(null);
-        refreshUsers();
+    // Function to handle the deletion of a user
+    const handleDelete = async (userId) => {
+        if (window.confirm('Are you sure you want to delete this user?')) {
+            try {
+                const userRef = doc(db, 'users', userId);
+                await deleteDoc(userRef);
+                refreshUsers();  // Refresh the user list after deletion
+            } catch (error) {
+                console.error('Error deleting user:', error);
+                alert('Failed to delete user. Please try again.');
+            }
+        }
     };
 
     return (
@@ -26,9 +28,6 @@ const UserList = () => {
                     key={user.id}
                     user={user}
                     onDelete={() => handleDelete(user.id)}
-                    onEdit={handleEditUser}
-                    onSave={saveUserChanges}
-                    isEditing={editingUserId === user.id}
                 />
             ))}
         </div>
@@ -36,3 +35,4 @@ const UserList = () => {
 };
 
 export default UserList;
+

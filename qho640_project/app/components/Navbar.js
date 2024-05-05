@@ -3,12 +3,16 @@ import Link from 'next/link';
 import Image from 'next/image';
 import React, { useState, useEffect } from "react";
 import { UserAuth } from "../auth/AuthContext";
+import { useCart } from '../checkout/cartContext';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCartShopping } from '@fortawesome/free-solid-svg-icons';
 
 const Navbar = () => {
 
     const { user, role, logOut } = UserAuth();
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [loading, setLoading] = useState(true);
+    const { itemCount, total } = useCart();
 
     const handleSignOut = async () => {
         try {
@@ -87,10 +91,13 @@ const Navbar = () => {
 
                     <div className="navbar-end">
                     <div className="navbar-item">
+                    <div className="buttons">
                     {user && user.displayName && (
                         <p className="text-gray-50 font-semibold">Welcome, {user.displayName}</p>
                         )}&nbsp;
-                        <div className="buttons">
+                            <Link href="/cart" className="button is-primary">
+                                <p><FontAwesomeIcon icon={faCartShopping} />&nbsp;({itemCount}) £{total}</p>
+                            </Link>
                         <button onClick={handleSignOut} className="button is-warning">SignOut</button>
                         </div>
                     </div>

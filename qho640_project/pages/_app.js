@@ -2,14 +2,16 @@
 import '../app/globals.css';
 import { AuthContextProvider } from '../app/auth/AuthContext';
 import Layout from '../app/components/Layout';
-//import Head from 'next/head';
+import { CartProvider } from '../app/checkout/cartContext';
 
 function MyApp({ Component, pageProps }) {
   return (
     <AuthContextProvider>
+      <CartProvider>
       <Layout>
         <Component {...pageProps} />
       </Layout>
+      </CartProvider>
     </AuthContextProvider>
   );
 }

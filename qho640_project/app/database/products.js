@@ -1,37 +1,7 @@
-/*
-import { useState, useEffect } from "react";
-import { db } from "../firebaseConfig"; 
-import { collection, getDocs } from "firebase/firestore";
 
-
-async function fetchProductsFromFirebase() {
-	const querySnapShot = await getDocs(collection(db, 'productsCategories'));
-
-	const productsList = [];
-	querySnapShot.forEach((doc) => {
-		productsList.push({id: doc.id,...doc.data()});
-	})
-	
-return productsList;
-}
-
-export default function useProducts() {
-    const [products, setProducts] = useState([]);
-
-    useEffect(() => {
-        async function fetchData() {
-            const productsList = await fetchProductsFromFirebase();
-            setProducts(productsList);
-        }
-        fetchData();
-    } , []);
-    return products;
-}
-
-*/
 
 import { useState, useEffect, useCallback } from "react";
-import { db } from "../firebaseConfig"; // Ensure this path is correct
+import { db } from "../firebaseConfig"; 
 import { collection, getDocs } from "firebase/firestore";
 
 async function fetchProductsFromFirebase() {

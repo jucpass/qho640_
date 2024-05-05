@@ -3,13 +3,16 @@ import React, { useState } from 'react';
 import useProducts from '../database/products';
 import Image from 'next/image';
 import { UserAuth } from '../auth/AuthContext'; 
+import { useCart } from '../checkout/cartContext';
 import { db } from '../firebaseConfig';
 import { updateDoc, deleteDoc, doc } from "firebase/firestore";
 
 function ProductCards() {
     const { products, refreshProducts } = useProducts();
+    const { addToCart } = useCart();
     const { role } = UserAuth();
     const [editingStates, setEditingStates] = useState({});
+
 
     const handleDelete = async (productId) => {
         if (role === 'admin') {
@@ -83,9 +86,9 @@ function ProductCards() {
                             <Image 
                                 src={product.Image}
                                 alt={product.Model}
-                                width={50}
-                                height={80}
-                                unoptimized={true}  // Add this if you face issues with image optimization
+                                width={30}
+                                height={60}
+                                unoptimized={true} 
                             />
                         </figure>
                     </div>
@@ -132,11 +135,15 @@ function ProductCards() {
                             </div>
                         </div>
                         <div className="content">
-                            {role === 'admin' && (
+                            {role === 'admin' ? (
                                 <div className="buttons">
                                     <button className="button is-warning" onClick={() => toggleEdit(product.id)}>Edit</button>
                                     <button className="button is-danger" onClick={() => handleDelete(product.id)}>Delete</button>
                                 </div>
+                            ) : (
+                                <div className="buttons">
+                                <button className="button is-success" onClick={() => addToCart(product)}>Add to Cart</button>
+                            </div>
                             )}
                         </div>
                     </div>

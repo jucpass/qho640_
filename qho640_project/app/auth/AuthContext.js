@@ -81,7 +81,7 @@ export const AuthContextProvider = ({ children }) => {
                 setUser(null);
                 setRole(null);
             }
-            setLoading(false); // Ensure loading is set to false here
+            setLoading(false); 
         });
         return () => unsubscribe();
     }, [firestore]);

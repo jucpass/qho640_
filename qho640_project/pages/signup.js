@@ -5,6 +5,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGoogle } from '@fortawesome/free-brands-svg-icons';
 import { faApple } from '@fortawesome/free-brands-svg-icons';
 
+//** ADJUST DELAYED REDIRECT FROM EMAIL LOGIN */
+
 const Page = () => {
     const { user, logOut, googleSignIn, signUp } = UserAuth();
     const [loading, setLoading] = useState(true);

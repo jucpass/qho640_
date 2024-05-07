@@ -3,7 +3,7 @@
 import React, { useContext, useEffect, createContext, useState } from "react";
 import { signInWithPopup, signOut, onAuthStateChanged, GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { doc, getDoc, setDoc, getFirestore } from "firebase/firestore";
-import { auth } from "../firebaseConfig";  // Assuming this is correctly configured
+import { auth } from "../firebaseConfig"; 
 
 const AuthContext = createContext();
 
@@ -32,7 +32,7 @@ export const AuthContextProvider = ({ children }) => {
             if (userDoc.exists()) {
                 setRole(userDoc.data().role);
             } else {
-                setRole("user");  // Assume default role if no document exists
+                setRole("user");  
             }
             return userCredential;
         } catch (error) {

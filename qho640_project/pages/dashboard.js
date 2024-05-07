@@ -1,7 +1,9 @@
-// pages/index.js
+
 'use client'
 import React, {useEffect, useState} from "react";
 import { UserAuth } from "../app/auth/AuthContext";
+
+//make it only accessible to admin users
 
 const Page = () => {
     const {user} =UserAuth();

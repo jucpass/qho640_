@@ -57,7 +57,6 @@ const Navbar = () => {
 
             <div id="navbarBasicExample" className="navbar-menu">
                 <div className="navbar-start">
-                {/* Directly apply href on Link and wrap <a> inside */}
                 <Link href="/" className="navbar-item">
                     Home
                 </Link>

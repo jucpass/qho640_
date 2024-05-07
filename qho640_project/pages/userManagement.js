@@ -4,16 +4,17 @@ import useUsers from '../app/database/users';
 import { doc, deleteDoc } from 'firebase/firestore';
 import { db } from '../app/firebaseConfig';
 
+
+// CLEAN THE CODE MOVE LOGIC TO HOOKS
 const UserList = () => {
     const { users, refreshUsers } = useUsers();
 
-    // Function to handle the deletion of a user
     const handleDelete = async (userId) => {
         if (window.confirm('Are you sure you want to delete this user?')) {
             try {
                 const userRef = doc(db, 'users', userId);
                 await deleteDoc(userRef);
-                refreshUsers();  // Refresh the user list after deletion
+                refreshUsers();  
             } catch (error) {
                 console.error('Error deleting user:', error);
                 alert('Failed to delete user. Please try again.');

@@ -20,7 +20,8 @@ export const CartProvider = ({ children, initialCart }) => {
         setItemCount(newCount);
 
         // Save cart to cookies
-        Cookies.set('cart', JSON.stringify(cart), { expires: 7, path: '/' });
+        // ** URGENT ** link cart to the user's browser
+        Cookies.set('cart', JSON.stringify(cart), { expires: 1, path: '/' });
     }, [cart]);
 
     const addToCart = (product) => {

@@ -3,7 +3,7 @@ import { db } from '../firebaseConfig';
 import { collection, addDoc } from "firebase/firestore"; 
 import { UserAuth } from '../auth/AuthContext'; 
 
-export default function AddItemPage() {
+export default function AddItemPage( { refreshProducts } ) {
     const [Features, setFeatures] = useState('');
     const [Image, setImage] = useState('');
     const [Make, setMake] = useState('');
@@ -11,32 +11,50 @@ export default function AddItemPage() {
     const [Price, setPrice] = useState('');
     const { user, role } = UserAuth(); // Context to access user and role
 
-    // Redirect or hide form if not admin
     useEffect(() => {
         if (role !== 'admin') {
             alert('You are not authorized to view this page.');
-            // need to implement a redirect here
         }
     }, [role]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (role === 'admin') {
+        
+        if (role === 'admin' && Features && Image && Make && Model && Price) {
+
+            if (Number(Price) <= 0) {
+                alert('Please enter a valid price.');
+                return;
+            }
+    
             try {
                 const docRef = await addDoc(collection(db, "productsCategories"), {
                     Features,
                     Image,
                     Make,
                     Model,
-                    Price: Number(Price) 
+                    Price: Number(Price)
                 });
                 console.log("Document written with ID: ", docRef.id);
-                // Reset form or show a success message
+                alert('Product added successfully!');
+                refreshProducts(); 
+                setFeatures('');
+                setImage('');
+                setMake('');
+                setModel('');
+                setPrice('');
+
+                 // Refresh the product list after adding a new product
             } catch (e) {
                 console.error("Error adding document: ", e);
+                alert('Failed to add product. Please try again.');
             }
         } else {
-            alert('You are not authorized to perform this action.');
+            if (role !== 'admin') {
+                alert('You are not authorized to perform this action.');
+            } else {
+                alert('Please fill in all the fields.');
+            }
         }
     };
 

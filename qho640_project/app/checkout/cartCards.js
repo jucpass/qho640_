@@ -1,19 +1,41 @@
 
-import React from "react";
+"use client";
+import React, {useState, useEffect} from "react";
 import { useCart } from "../checkout/cartContext";
 import { useRouter } from 'next/router';
 import Image from 'next/image';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash, faMinus, faPlus } from '@fortawesome/free-solid-svg-icons';
+import CheckoutModal from './checkout';
 
 
-function CartDisplay() {
+
+function CartDisplay({user}) {
+
     const { cart, total, removeFromCart, decreaseQuantity, increaseQuantity } = useCart();
     const router = useRouter();
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    
+    useEffect(() => {
+        console.log("Current user in cartCards:", user);
+    }, [user]);
 
     const handleCheckout = () => {
-        router.push('/checkout');
+        if (user) {
+            setIsModalOpen(true);
+        } else {
+            console.error("No user logged in");
     };
+    };
+
+    const closeModal = () => {
+        setIsModalOpen(false);
+    };
+
+    //const handleCheckout = () => {
+    //    router.push('/checkout');
+    //};
 
     const handleRemove = (id) => {
         removeFromCart(id);
@@ -86,6 +108,7 @@ function CartDisplay() {
             <button className="button is-success" onClick={handleCheckout}>
                 Proceed to Checkout
             </button>
+            <CheckoutModal isOpen={isModalOpen} onClose={closeModal} total={total} cart={cart} user={user} />
             </div>
             <div className="column"></div>
         </div>

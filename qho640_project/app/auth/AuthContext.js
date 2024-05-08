@@ -4,6 +4,7 @@ import React, { useContext, useEffect, createContext, useState } from "react";
 import { signInWithPopup, signOut, onAuthStateChanged, GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { doc, getDoc, setDoc, getFirestore } from "firebase/firestore";
 import { auth } from "../firebaseConfig"; 
+import Cookies from 'js-cookie';
 
 const AuthContext = createContext();
 
@@ -14,13 +15,51 @@ export const AuthContextProvider = ({ children }) => {
 
     const firestore = getFirestore();
 
+    /* working but not saving user details to Firestore
     const googleSignIn = () => {
         const provider = new GoogleAuthProvider();
         signInWithPopup(auth, provider);
     };
+    */
+    const googleSignIn = async () => {
+        const provider = new GoogleAuthProvider();
+        try {
+            const userCredential = await signInWithPopup(auth, provider);
+            const user = userCredential.user;
+            setUser(user);
 
-    const logOut = () => {
-        signOut(auth);
+            const userRef = doc(firestore, "users", user.uid);
+            const userDoc = await getDoc(userRef);
+    
+            if (!userDoc.exists()) {
+
+                await setDoc(userRef, {
+                    //uid: user.uid, check if this is necessary
+                    email: user.email,
+                    firstName: user.displayName,
+                    role: "user"  // default role
+                });
+                setRole("user");
+            } else {
+                setRole(userDoc.data().role);
+            }
+    
+            return userCredential;
+        } catch (error) {
+            console.error("Error signing in with Google:", error);
+            throw error;
+        }
+    };
+
+    const logOut = async () => {
+        try {
+            if (auth.currentUser) {
+                Cookies.remove(`cart_${auth.currentUser.uid}`, { path: '/' });
+            }
+            await signOut(auth);
+        } catch (error) {
+            console.error("Failed to log out:", error);
+        }
     };
 
     const signInWithEmail = async (email, password) => {
@@ -68,6 +107,7 @@ export const AuthContextProvider = ({ children }) => {
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+            console.log("Auth state changed. User: ", currentUser);
             if (currentUser) {
                 setUser(currentUser);
                 const userRef = doc(firestore, "users", currentUser.uid);
@@ -85,6 +125,10 @@ export const AuthContextProvider = ({ children }) => {
         });
         return () => unsubscribe();
     }, [firestore]);
+
+    if (loading) {
+        return <div>Loading...</div>;
+    }
 
     return (
         <AuthContext.Provider value={{ user, role, googleSignIn, logOut, signUp, signInWithEmail }}>

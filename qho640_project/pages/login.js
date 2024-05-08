@@ -17,8 +17,8 @@ function LoginPage() {
     setLoading(true);
     try {
       await googleSignIn();
-      if (user) // prevents the premature redirect to dashboard
-        router.push('/dashboard');
+      if (user) // prevents the premature redirect
+        router.push('/');
     } catch (error) {
       console.error(error);
     } finally {
@@ -31,7 +31,7 @@ function LoginPage() {
     setLoading(true);
     try {
       await signInWithEmail(email, password);
-      router.push('/dashboard');
+      router.push('/');
     } catch (error) {
       console.error(error);
     } finally {
@@ -57,7 +57,7 @@ function LoginPage() {
 
   useEffect(() => {
     if (user && !loading) {
-      router.push('/dashboard');
+      router.push('/');
     }
   }, [user, loading, router]);
 
@@ -70,10 +70,8 @@ function LoginPage() {
         ) : user ? (
           <div className="flex items-center justify-center space-x-4">
             <p className="text-gray-800 font-semibold">Welcome, {user.displayName}</p>
-            <p onClick={handleSignOut} className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors duration-300 cursor-pointer">
-              Sign Out
-            </p>
           </div>
+
         ) : (
           <div>
             <div className="flex justify-center mb-4">

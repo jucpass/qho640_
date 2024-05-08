@@ -7,8 +7,7 @@ import { useCart } from '../checkout/cartContext';
 import { db } from '../firebaseConfig';
 import { updateDoc, deleteDoc, doc } from "firebase/firestore";
 
-function ProductCards() {
-    const { products, refreshProducts } = useProducts();
+function ProductCards({ products = [], refreshProducts }) {
     const { addToCart } = useCart();
     const { role } = UserAuth();
     const [editingStates, setEditingStates] = useState({});
@@ -17,7 +16,6 @@ function ProductCards() {
     const handleDelete = async (productId) => {
         if (role === 'admin') {
             console.log('Deleting product with ID: ', productId);
-            // Confirmation dialog
             if (window.confirm('Are you sure you want to delete this product?')) {
                 try {
                     const docRef = doc(db, 'productsCategories', productId);
@@ -79,8 +77,8 @@ function ProductCards() {
 
     return (
         <div className="cards-container">
-            {products.map((product, index) => (
-                <div key={product.id || index} className="card"> 
+            {products.map((product) => (
+                <div key={product.id} className="card"> 
                     <div className="card-image">
                         <figure className="image is-2by3">
                             <Image 

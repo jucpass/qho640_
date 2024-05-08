@@ -1,39 +1,43 @@
+
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import Cookies from 'js-cookie';
+import { UserAuth } from '../auth/AuthContext';
 
 const CartContext = createContext();
 
-export const CartProvider = ({ children, initialCart }) => {
-    const [cart, setCart] = useState(() => {
-        // Try to get cart from initialCart if available
-        return initialCart || JSON.parse(Cookies.get('cart') || '[]');
-    });
+export const CartProvider = ({ children }) => {
+    const { user } = UserAuth();
+    const userId = user ? user.uid : 'guest';
 
-    const [total, setTotal] = useState(0); // Total cost of the cart
-    const [itemCount, setItemCount] = useState(0); // Total number of items
+    // Initialize cart when component mounts or user changes
+    const [cart, setCart] = useState([]);
+    useEffect(() => {
+        const loadCart = () => {
+            const cartData = Cookies.get(`cart_${userId}`);
+            return cartData ? JSON.parse(cartData) : [];
+        };
+        setCart(loadCart());
+    }, [userId]);
+
+    const [total, setTotal] = useState(0);
+    const [itemCount, setItemCount] = useState(0);
 
     useEffect(() => {
-        // Calculate total and item count
         const newTotal = cart.reduce((acc, item) => acc + item.Price * (item.quantity || 1), 0);
         const newCount = cart.reduce((acc, item) => acc + (item.quantity || 1), 0);
         setTotal(newTotal);
         setItemCount(newCount);
-
-        // Save cart to cookies
-        // ** URGENT ** link cart to the user's browser
-        Cookies.set('cart', JSON.stringify(cart), { expires: 1, path: '/' });
-    }, [cart]);
+        Cookies.set(`cart_${userId}`, JSON.stringify(cart), { expires: 1, path: '/' });
+    }, [cart, userId]);
 
     const addToCart = (product) => {
         setCart(currentCart => {
             const index = currentCart.findIndex(item => item.id === product.id);
             if (index >= 0) {
-                // If the product exists, increase quantity
                 const updatedCart = [...currentCart];
-                updatedCart[index].quantity = (updatedCart[index].quantity || 1) + 1;
+                updatedCart[index].quantity += 1;
                 return updatedCart;
             }
-            // Add new product to the cart
             return [...currentCart, { ...product, quantity: 1 }];
         });
     };
@@ -43,32 +47,25 @@ export const CartProvider = ({ children, initialCart }) => {
     };
 
     const increaseQuantity = (productId) => {
-        setCart(currentCart => {
-            return currentCart.map(item => {
-                if (item.id === productId) {
-                    return { ...item, quantity: item.quantity + 1 };
-                }
-                return item;
-            });
-        });
+        setCart(currentCart => currentCart.map(item => item.id === productId ? { ...item, quantity: item.quantity + 1 } : item));
     };
-    
+
     const decreaseQuantity = (productId) => {
-        setCart(currentCart => {
-            return currentCart.map(item => {
-                if (item.id === productId && item.quantity > 1) {
-                    return { ...item, quantity: item.quantity - 1 };
-                }
-                return item;
-            }).filter(item => item.quantity > 0); // if zero removes the item
-        });
+        setCart(currentCart => currentCart.map(item => item.id === productId && item.quantity > 1 ? { ...item, quantity: item.quantity - 1 } : item)
+        .filter(item => item.quantity > 0)); // Remove items with quantity 0
+    };
+
+    const clearCart = () => {
+        setCart([]);  
     };
 
     return (
-        <CartContext.Provider value={{ cart, addToCart, removeFromCart, increaseQuantity, decreaseQuantity, total, itemCount }}>
+        <CartContext.Provider value={{ cart, addToCart, removeFromCart, increaseQuantity, decreaseQuantity, clearCart, total, itemCount }}>
             {children}
         </CartContext.Provider>
     );
 };
 
 export const useCart = () => useContext(CartContext);
+
+

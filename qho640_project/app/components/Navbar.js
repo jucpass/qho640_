@@ -36,85 +36,75 @@ const Navbar = () => {
     }, [user]);
     
 
-        return (
-            <nav className="navbar" role="navigation" aria-label="main navigation">
+    return (
+        <nav className="navbar" role="navigation" aria-label="main navigation">
             <div className="navbar-brand">
                 <Link href="/" aria-label="Home" className="navbar-item">
-                <Image
-                    src="/images/logo.png" 
-                    alt="Company Logo"
-                    width={112} 
-                    height={28}
-                />
+                    <Image
+                        src="/images/logo.png" 
+                        alt="Company Logo"
+                        width={112} 
+                        height={28}
+                    />
                 </Link>
-
                 <a role="button" className="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
-                <span aria-hidden="true"></span>
-                <span aria-hidden="true"></span>
-                <span aria-hidden="true"></span>
+                    <span aria-hidden="true"></span>
+                    <span aria-hidden="true"></span>
+                    <span aria-hidden="true"></span>
                 </a>
             </div>
 
             <div id="navbarBasicExample" className="navbar-menu">
                 <div className="navbar-start">
-                <Link href="/" className="navbar-item">
-                    Home
-                </Link>
-                <Link href="/products" className="navbar-item">
-                    Products
-                </Link>
-                  {role === 'admin' && (
-                    <>
-                        <Link href="/addItem" className="navbar-item">
-                            Products Management
-                        </Link>
-                        <Link href="/userManagement" className="navbar-item">
-                        User Management
-                        </Link>
-                    </>
+                    <Link href="/" className="navbar-item">Home</Link>
+                    {role != 'admin' && (              
+                    <Link href="/products" className="navbar-item">Products</Link>
                     )}
-                <div className="navbar-item has-dropdown is-hoverable">
-                    <a className="navbar-link">More</a>
-                    <div className="navbar-dropdown">
-                    <Link href="/about" className="navbar-item">About</Link>
-                    <Link href="/contact" className="navbar-item">Contact</Link>
-                    <hr className="navbar-divider" />
-                    <Link href="/report" className="navbar-item">Report an issue</Link>
+                    <div className="navbar-item has-dropdown is-hoverable">
+                        <a className="navbar-link">More</a>
+                        <div className="navbar-dropdown">
+                            <Link href="/about" className="navbar-item">About</Link>
+                            <Link href="/contact" className="navbar-item">Contact</Link>
+                            <hr className="navbar-divider" />
+                            <Link href="/report" className="navbar-item">Report an issue</Link>
+                        </div>
                     </div>
-                </div>
                 </div>
 
                 {loading ? (
                     <p>Loading...</p>
                 ) : isLoggedIn ? (
-
                     <div className="navbar-end">
-                    <div className="navbar-item">
-                    <div className="buttons">
-                    {user && user.displayName && (
-                        <p className="text-gray-50 font-semibold">Welcome, {user.displayName}</p>
-                        )}&nbsp;
-                            <Link href="/cart" className="button is-primary">
-                                <p><FontAwesomeIcon icon={faCartShopping} />&nbsp;({itemCount}) £{total}</p>
-                            </Link>
-                        <button onClick={handleSignOut} className="button is-warning">SignOut</button>
+                        <div className="navbar-item">
+                            <div className="buttons">
+                                {user && user.displayName && (
+                                    <p className="text-gray-50 font-semibold">Welcome, {user.displayName}</p>
+                                )}
+                                &nbsp;
+                                {role === 'admin' ? (
+                                    <Link href="/dashboard" className="button is-primary">Dashboard</Link>
+                                ) : (
+                                    <Link href="/cart" className="button is-primary">
+                                        <p><FontAwesomeIcon icon={faCartShopping} />&nbsp;({itemCount}) £{total}</p>
+                                    </Link>
+                                )}
+                                <button onClick={handleSignOut} className="button is-warning">Sign Out</button>
+                            </div>
                         </div>
                     </div>
-                    </div>
                 ) : (
-                <div className="navbar-end">
-                <div className="navbar-item">
-                    <div className="buttons">
-                    <Link href="/signup" className="button is-primary"><strong>Sign up</strong>
-                    </Link>
-                    <Link href="/login" className="button is-light">Log in</Link>
+                    <div className="navbar-end">
+                        <div className="navbar-item">
+                            <div className="buttons">
+                                <Link href="/signup" className="button is-primary"><strong>Sign up</strong></Link>
+                                <Link href="/login" className="button is-light">Log in</Link>
+                            </div>
+                        </div>
                     </div>
-                </div>
-                </div>
                 )}
             </div>
-            </nav>
-        );
+        </nav>
+    );
         };
 
 export default Navbar;

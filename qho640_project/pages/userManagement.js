@@ -3,11 +3,13 @@ import UserCard from '../app/users/usersCards';
 import useUsers from '../app/database/users';
 import { doc, deleteDoc } from 'firebase/firestore';
 import { db } from '../app/firebaseConfig';
+import useProtectRoute from "../app/utils/useProtectRoute";
 
 
 // CLEAN THE CODE MOVE LOGIC TO HOOKS
 const UserList = () => {
     const { users, refreshUsers } = useUsers();
+    const { role } = useProtectRoute('admin');
 
     const handleDelete = async (userId) => {
         if (window.confirm('Are you sure you want to delete this user?')) {
@@ -23,6 +25,7 @@ const UserList = () => {
     };
 
     return (
+        role === 'admin' ? (
         <div>
             {users.map(user => (
                 <UserCard
@@ -32,6 +35,11 @@ const UserList = () => {
                 />
             ))}
         </div>
+        ) : (
+            <div>
+                <h1>Access Denied</h1>
+            </div>
+        )
     );
 };
 

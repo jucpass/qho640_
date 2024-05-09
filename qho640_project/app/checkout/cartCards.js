@@ -5,7 +5,7 @@ import { useCart } from "../checkout/cartContext";
 import { useRouter } from 'next/router';
 import Image from 'next/image';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrash, faMinus, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faTrash, faMinus, faPlus, faCreditCard } from '@fortawesome/free-solid-svg-icons';
 import CheckoutModal from './checkout';
 
 
@@ -23,10 +23,16 @@ function CartDisplay({user}) {
 
     const handleCheckout = () => {
         if (user) {
-            setIsModalOpen(true);
+            if (cart.length > 0) {
+                setIsModalOpen(true);
+            } else {
+                console.error("The cart is empty");
+                alert("Please add some items to your cart before checkout."); 
+            }
         } else {
             console.error("No user logged in");
-    };
+            alert("Please log in to proceed with checkout."); 
+        }
     };
 
     const closeModal = () => {
@@ -106,7 +112,7 @@ function CartDisplay({user}) {
             </div>
             <p className="title">Total: £{total.toFixed(2)}</p>
             <button className="button is-success" onClick={handleCheckout}>
-                Proceed to Checkout
+                Proceed to Payment &nbsp; <FontAwesomeIcon icon={faCreditCard} />
             </button>
             <CheckoutModal isOpen={isModalOpen} onClose={closeModal} total={total} cart={cart} user={user} />
             </div>

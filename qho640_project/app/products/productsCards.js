@@ -127,7 +127,7 @@ function ProductCards({ products = [], refreshProducts }) {
                                         <p className="title is-4">{product.Model}</p>
                                         <p className="subtitle is-6">{product.Make}</p>
                                         <p>Features: {product.Features}</p>
-                                        <p>Price: ${product.Price}</p>
+                                        <p>Price: £{product.Price}</p>
                                     </React.Fragment>
                                 )}
                             </div>

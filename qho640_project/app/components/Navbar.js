@@ -81,9 +81,8 @@ const Navbar = () => {
                                     <p className="text-gray-50 font-semibold">Welcome, {user.displayName}</p>
                                 )}
                                 &nbsp;
-                                {role === 'admin' ? (
                                     <Link href="/dashboard" className="button is-primary">Dashboard</Link>
-                                ) : (
+                                {role === 'user' && (
                                     <Link href="/cart" className="button is-primary">
                                         <p><FontAwesomeIcon icon={faCartShopping} />&nbsp;({itemCount}) £{total}</p>
                                     </Link>

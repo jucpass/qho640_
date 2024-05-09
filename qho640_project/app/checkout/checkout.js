@@ -4,12 +4,14 @@ import React, { useState, useEffect } from 'react';
 import { db } from '../firebaseConfig'; 
 import { collection, addDoc } from 'firebase/firestore';
 import { useCart } from '../checkout/cartContext';
+import { Timestamp } from "firebase/firestore";
 
 function CheckoutModal({ isOpen, onClose, total, cart, user }) {
 
     const [cardNumber, setCardNumber] = useState('');
     const [expDate, setExpDate] = useState('');
     const [cvv, setCvv] = useState('');
+    const { clearCart } = useCart();
 
     useEffect(() => {
         console.log("Current user in CheckoutModal:", user);
@@ -32,7 +34,7 @@ function CheckoutModal({ isOpen, onClose, total, cart, user }) {
                 //cardNumber: cardNumber,
                 //expDate: expDate,
                 //cvv: cvv,
-                date: new Date().toISOString(), //timestamp
+                date: Timestamp.now(), //timestamp
             });
             console.log("Document written with ID: ", docRef.id);
             alert('Order added successfully!');

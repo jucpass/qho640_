@@ -4,6 +4,8 @@ import { UserAuth } from '../app/auth/AuthContext';
 import { Timestamp } from "firebase/firestore";
 import Image from 'next/image';
 
+// https://bulma.io/documentation/components/modal/
+
     const OrdersPage = () => {
         const { user, role } = UserAuth();
         const { orders, refreshOrders } = useOrders(user, role);

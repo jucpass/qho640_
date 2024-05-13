@@ -3,13 +3,13 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import Cookies from 'js-cookie';
 import { UserAuth } from '../auth/AuthContext';
 
+
 const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
     const { user } = UserAuth();
     const userId = user ? user.uid : 'guest';
 
-    // Initialize cart when component mounts or user changes
     const [cart, setCart] = useState([]);
     useEffect(() => {
         const loadCart = () => {

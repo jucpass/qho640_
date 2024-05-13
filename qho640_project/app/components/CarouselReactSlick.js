@@ -1,7 +1,8 @@
 import React from 'react';
 import Slider from 'react-slick';
 import Image from 'next/image';
-import useProducts from '../database/products';
+import { useProducts } from '../database/products';
+import Link from 'next/link';
 
 const Carousel = () => {
     const { products } = useProducts();
@@ -19,6 +20,7 @@ const Carousel = () => {
     };
 
     return (
+        <Link href="/products">
         <div style={{ width: '80%', margin: '0 auto' }} className="slider-container">
             <Slider {...settings}>
                 {products.map(product => (
@@ -33,6 +35,7 @@ const Carousel = () => {
                 ))}
             </Slider>
         </div>
+        </Link>
     );
 };
 

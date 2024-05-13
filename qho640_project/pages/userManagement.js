@@ -32,6 +32,7 @@ const UserList = () => {
                     key={user.id}
                     user={user}
                     onDelete={() => handleDelete(user.id)}
+                    showAdminControls={role === "admin"}
                 />
             ))}
         </div>

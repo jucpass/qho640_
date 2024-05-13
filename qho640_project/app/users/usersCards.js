@@ -2,9 +2,23 @@ import React, { useState } from 'react';
 import { doc, updateDoc } from 'firebase/firestore';
 import { db } from '../firebaseConfig'; 
 
-const UserCard = ({ user, onDelete }) => {
+const UserCard = ({ user, onDelete, showAdminControls = false }) => {
     const [role, setRole] = useState(user.role);
     const [pendingRole, setPendingRole] = useState(user.role); 
+
+    console.log('UserCard:', user);
+
+    function handleFirstName(user) {
+        let fName; 
+    
+        if (!user.firstName || user.firstName.trim() === '') {
+            fName = user.displayName; 
+        } else {
+            fName = user.firstName; 
+        }
+    
+        return fName; 
+    }
 
     const handleRoleChange = async (newRole) => {
         if (newRole === role) return; 
@@ -26,37 +40,33 @@ const UserCard = ({ user, onDelete }) => {
     };
 
     return (
-        <section className="section">
-        <div className="columns">
-            <div className="column"></div>
-        <div className="column">
-        
         <div className="card">
-        <div className="user-card">
-            <div><strong>Name:</strong> {user.firstName}</div>
-            <div className="block"></div>
-            <div><strong>Email:</strong> {user.email}</div>
-            <div className="block"></div>
-            <div><strong>Role:</strong>
-            <div className="select">
-                    <select 
-                        value={role}
-                        onChange={(e) => handleRoleChange(e.target.value)}
-                        className="select">
-                        <option value="user">User</option>
-                        <option value="admin">Admin</option>
-                    </select>
+            <div className="user-card">
+                <div><strong>Name:</strong> {handleFirstName(user)} </div>
+                <div className="block"></div>
+                <div><strong>Email:</strong> {user.email}</div>
+                <div className="block"></div>
+                <div><strong>My Balance:</strong> {user.balance}</div>
+                <div className="block"></div>
+                {showAdminControls && (
+                    <>
+                        <div><strong>Role:</strong>
+                            <div className="select">
+                                <select 
+                                    value={role}
+                                    onChange={(e) => handleRoleChange(e.target.value)}
+                                    className="select">
+                                    <option value="user">User</option>
+                                    <option value="admin">Admin</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div className="block"></div>
+                        <button className='button is-danger' onClick={onDelete}>Delete</button>
+                    </>
+                )}
             </div>
-            <div className="block"></div>
-            </div>
-            <div className="block"></div>
-            <button className='button is-danger' onClick={onDelete}>Delete</button>
         </div>
-        </div>
-        </div>
-        <div className="column"></div>
-        </div>
-        </section>
     );
 };
 

@@ -120,6 +120,13 @@ function ProductCards({ products = [], refreshProducts }) {
                                             name="Price"
                                             onChange={(e) => handleEditChange(product, 'Price', e.target.value)}
                                         />
+                                        <input
+                                            type="number"
+                                            className="input"
+                                            value={editingStates[product.id].Stock}
+                                            name="Stock"
+                                            onChange={(e) => handleEditChange(product, 'Stock', e.target.value)}
+                                        />
                                         <button className="button is-success" onClick={() => saveChanges(product.id)}>Save</button>
                                     </React.Fragment>
                                 ) : (
@@ -128,6 +135,7 @@ function ProductCards({ products = [], refreshProducts }) {
                                         <p className="subtitle is-6">{product.Make}</p>
                                         <p>Features: {product.Features}</p>
                                         <p>Price: £{product.Price}</p>
+                                        <p>Stock: {product.Stock}</p>
                                     </React.Fragment>
                                 )}
                             </div>

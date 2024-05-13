@@ -9,6 +9,7 @@ export default function AddItemPage( { refreshProducts } ) {
     const [Make, setMake] = useState('');
     const [Model, setModel] = useState('');
     const [Price, setPrice] = useState('');
+    const [Stock, setStock] = useState('');
     const { user, role } = UserAuth(); // Context to access user and role
 
     useEffect(() => {
@@ -20,10 +21,10 @@ export default function AddItemPage( { refreshProducts } ) {
     const handleSubmit = async (e) => {
         e.preventDefault();
         
-        if (role === 'admin' && Features && Image && Make && Model && Price) {
+        if (role === 'admin' && Features && Image && Make && Model && Price && Stock) {
 
-            if (Number(Price) <= 0) {
-                alert('Please enter a valid price.');
+            if (Number(Price) <= 0 || Number(Stock) <= 0){
+                alert('Price and Stock could not be less than zero.');
                 return;
             }
     
@@ -33,7 +34,8 @@ export default function AddItemPage( { refreshProducts } ) {
                     Image,
                     Make,
                     Model,
-                    Price: Number(Price)
+                    Price: Number(Price),
+                    Stock: Number(Stock),
                 });
                 console.log("Document written with ID: ", docRef.id);
                 alert('Product added successfully!');
@@ -43,6 +45,7 @@ export default function AddItemPage( { refreshProducts } ) {
                 setMake('');
                 setModel('');
                 setPrice('');
+                setStock('');
 
                  // Refresh the product list after adding a new product
             } catch (e) {
@@ -107,6 +110,14 @@ export default function AddItemPage( { refreshProducts } ) {
                                     placeholder="Price"
                                     value={Price}
                                     onChange={e => setPrice(e.target.value)}
+                                    className="input"
+                                />
+                                <div className="block"></div>
+                                <input
+                                    type="number"
+                                    placeholder="Stock"
+                                    value={Stock}
+                                    onChange={e => setStock(e.target.value)}
                                     className="input"
                                 />
                                 <div className="block"></div>

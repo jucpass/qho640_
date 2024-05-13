@@ -12,9 +12,10 @@ function IndexPage() {
     console.log("Current user in Index:", user);
 }, [user]);
     return (
-        <section className="section is-large">
-          <h1 className="title">INDEX PAGE</h1>
-        <p>This is the index Page</p>
+        <section className="section is-medium">
+          <h1 className="title has-text-centered">Welcome to Connect Shop</h1>
+          <div className="block"></div>
+        <h2 className="subtitle has-text-centered">Check out our current promotions</h2>
         <Carousel />
       </section>
     );

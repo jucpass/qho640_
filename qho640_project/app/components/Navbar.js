@@ -66,7 +66,7 @@ const Navbar = () => {
                             <Link href="/about" className="navbar-item">About</Link>
                             <Link href="/contact" className="navbar-item">Contact</Link>
                             <hr className="navbar-divider" />
-                            <Link href="/report" className="navbar-item">Report an issue</Link>
+                            <Link href="mailto:1dospj05@solent.ac.uk" className="navbar-item">Report an issue</Link>
                         </div>
                     </div>
                 </div>

@@ -5,6 +5,8 @@ import { db } from '../firebaseConfig';
 import { collection, addDoc } from 'firebase/firestore';
 import { useCart } from '../checkout/cartContext';
 import { Timestamp } from "firebase/firestore";
+import { checkBalance, updateBalance } from '../database/users';
+import { checkCurrentStock, updateStock } from '../database/products';
 
 function CheckoutModal({ isOpen, onClose, total, cart, user }) {
 
@@ -21,27 +23,48 @@ function CheckoutModal({ isOpen, onClose, total, cart, user }) {
         event.preventDefault();
         if (!user) {
             console.error("No user is signed in.");
+            alert('Please log in to proceed.');
             return; 
         }
-
+    
+        // Check if user has enough balance
+        const currentBalance = await checkBalance(user.uid);
+        if (total > currentBalance) {
+            alert('Insufficient balance to complete this order.');
+            return;
+        }
+    
+        // Check if all items are in stock
+        for (const item of cart) {
+            const stock = await checkCurrentStock(item.id);
+            if (item.quantity > stock) {
+                alert(`Insufficient stock for ${item.name}.`);
+                return;
+            }
+        }
+    
+        // Deduct the total from the user's balance and update the stock
+        await updateBalance(user.uid, currentBalance - total);
+        for (const item of cart) {
+            const stock = await checkCurrentStock(item.id);
+            await updateStock(item.id, stock - item.quantity);
+        }
+    
         try {
-
             const docRef = await addDoc(collection(db, "orders"), {
                 userId: user.uid,
                 userEmail: user.email,
                 items: cart,
                 total: total,
-                //cardNumber: cardNumber,
-                //expDate: expDate,
-                //cvv: cvv,
-                date: Timestamp.now(), //timestamp
+                date: Timestamp.now(), 
             });
             console.log("Document written with ID: ", docRef.id);
             alert('Order added successfully!');
             clearCart(); // Clear the cart after order is placed
-            onClose(); 
+            onClose(); // Close the modal
         } catch (error) {
             console.error('Error saving order: ', error);
+            alert('Failed to save order. Please try again.');
         }
     };
 

@@ -7,6 +7,7 @@ import Image from 'next/image';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash, faMinus, faPlus, faCreditCard } from '@fortawesome/free-solid-svg-icons';
 import CheckoutModal from './checkout';
+import { checkCurrentStock } from '../database/products';
 
 
 
@@ -47,8 +48,15 @@ function CartDisplay({user}) {
         removeFromCart(id);
     };
 
-    const handleIncrease = (id) => {
-        increaseQuantity(id);
+    const handleIncrease = async (id) => {
+        const currentStock = await checkCurrentStock(id);
+        const currentItem = cart.find(item => item.id === id);
+    
+        if (currentItem.quantity < currentStock) {
+            increaseQuantity(id);
+        } else {
+            alert("Cannot add more items. Stock limit reached.");
+        }
     };
 
     const handleDecrease = (id) => {

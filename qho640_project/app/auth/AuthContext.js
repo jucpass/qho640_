@@ -37,7 +37,8 @@ export const AuthContextProvider = ({ children }) => {
                     //uid: user.uid, check if this is necessary
                     email: user.email,
                     firstName: user.displayName,
-                    role: "user"  // default role
+                    role: "user",  // default role
+                    balance: 10000 
                 });
                 setRole("user");
             } else {
@@ -95,6 +96,7 @@ export const AuthContextProvider = ({ children }) => {
                 email: email,
                 firstName: firstName, // Store the first name
                 role: "user", // Set the default role
+                balance: 10000 // Set the default balance
             });
 
             setUser(userCredential.user);

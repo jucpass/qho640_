@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { db } from "../firebaseConfig"; 
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, doc, getDoc, updateDoc } from "firebase/firestore";
 
 async function fetchProductsFromFirebase() {
     const querySnapShot = await getDocs(collection(db, 'productsCategories'));
@@ -13,7 +13,25 @@ async function fetchProductsFromFirebase() {
     return productsList;
 }
 
-export default function useProducts() {
+async function checkCurrentStock(productId) {
+    const docRef = doc(db, 'productsCategories', productId); 
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+        return docSnap.data().Stock;
+    } else {
+        console.error("No such product found!");
+        return 0;
+    }
+}
+
+async function updateStock(productId, newStock) {
+    const docRef = doc(db, 'productsCategories', productId);
+    await updateDoc(docRef, {
+        Stock: newStock
+    });
+}
+
+function useProducts() {
     const [products, setProducts] = useState([]);
 
     const fetchData = useCallback(async () => {
@@ -27,6 +45,8 @@ export default function useProducts() {
 
     return { products, refreshProducts: fetchData };
 }
+
+export { useProducts, checkCurrentStock, updateStock };
 
 
 

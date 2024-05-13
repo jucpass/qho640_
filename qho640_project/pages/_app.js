@@ -4,6 +4,7 @@ import { AuthContextProvider } from '../app/auth/AuthContext';
 import Layout from '../app/components/Layout';
 import { CartProvider } from '../app/checkout/cartContext';
 
+
 function MyApp({ Component, pageProps, initialCart }) {
   return (
     <AuthContextProvider>

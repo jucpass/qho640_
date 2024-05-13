@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import useProducts from '../database/products';
+import { checkCurrentStock } from '../database/products';
 import Image from 'next/image';
 import { UserAuth } from '../auth/AuthContext'; 
 import { useCart } from '../checkout/cartContext';
@@ -148,7 +148,11 @@ function ProductCards({ products = [], refreshProducts }) {
                                 </div>
                             ) : (
                                 <div className="buttons">
+                                    {product.Stock > 0 ? (
                                 <button className="button is-success" onClick={() => addToCart(product)}>Add to Cart</button>
+                            ) : (
+                                <button className="button is-warning" disabled>Out of Stock</button>
+                            )}
                             </div>
                             )}
                         </div>

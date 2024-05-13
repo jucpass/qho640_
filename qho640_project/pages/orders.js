@@ -1,59 +1,96 @@
-import React from 'react';
+import React, {useState} from 'react';
 import useOrders from '../app/database/orders';
 import { UserAuth } from '../app/auth/AuthContext';
 import { Timestamp } from "firebase/firestore";
+import Image from 'next/image';
 
-
-
-
-const OrdersPage = () => {
-    const { user, role } = UserAuth();
-    const { orders, refreshOrders } = useOrders(user, role);
-
-    const convertTimestampToDate = (timestamp) => {
-        console.log("Timestamp received:", timestamp); // Check the actual received data
-        if (timestamp && typeof timestamp.toDate === 'function') {
-            return timestamp.toDate();
-        } else {
-            console.error("Provided data is not a Firestore Timestamp:", timestamp);
-            return null; // Handle as appropriate
-        }
-    };
-
-    const formatDate = (date) => {
-        if (!date) {
-            return "No date provided";
-        }
-        return `${date.toLocaleDateString()} at ${date.toLocaleTimeString()}`;
-    };
-
-    return (
-        <section className="section">
-        <div className="container">
-            <div className="columns is-centered">
-                <div className="column is-one-quarter"></div>
-                <div className="column">
+    const OrdersPage = () => {
+        const { user, role } = UserAuth();
+        const { orders, refreshOrders } = useOrders(user, role);
+        const [isModalOpen, setIsModalOpen] = useState(false);
+        const [selectedOrder, setSelectedOrder] = useState(null);
+    
+        const handleOrderClick = (order) => {
+            setSelectedOrder(order);
+            setIsModalOpen(true);
+        };
+    
+        const closeModal = () => {
+            setIsModalOpen(false);
+        };
+    
+        const formatDate = (timestamp) => {
+            if (!timestamp) return "Date not available";
+            const date = new Date(timestamp.seconds * 1000);
+            return `${date.toLocaleDateString()} at ${date.toLocaleTimeString()}`;
+        };
+    
+        return (
+            <section className="section">
+                <div className="container">
                     <h1 className='title'>Orders</h1>
-                        {orders.length > 0 ? (
-                            orders.map(order => (
-                                <div key={order.id} className='box'>
-                                    <p>Order ID: {order.id}</p>
-                                    <p>User Email: {order.userEmail}</p>
-                                    <p>Total: £{order.total}</p>
-                                    <p>Date: {order.date ? formatDate(convertTimestampToDate(order.date)) : "Date not available"}</p>
-                                </div>
-
-                            ))
-                        ) : (
-                            <p>No orders found.</p>
-                        )}
+                    <div className = "columns">
+                        <div className = "column"></div>
+                        <div className = "column">
+                    {orders.length > 0 ? orders.map(order => (
+                        <div key={order.id} className="box" onClick={() => handleOrderClick(order)} style={{ cursor: 'pointer', marginBottom: '10px' }}>
+                                <p className="subtitle">
+                                    Order ID: {order.id}
+                                </p>
+                                <p><strong>Date:</strong> {formatDate(order.date)}</p>
                         </div>
-                        <div className="column is-one-quarter"></div>
-
-        </div>
-        </div>
-        </section>
-    );
-};
-
-export default OrdersPage;
+                    )) : <p>No orders found.</p>}
+                    </div>
+                    <div className = "column"></div>
+                    </div>
+                    {selectedOrder && (
+                    <div className={`modal ${isModalOpen ? 'is-active' : ''}`}>
+                        <div className="modal-background" onClick={closeModal}></div>
+                        <div className="modal-card">
+                            <header className="modal-card-head">
+                                <p className="modal-card-title">Order Details</p>
+                                <button className="delete" aria-label="close" onClick={closeModal}></button>
+                            </header>
+                            <section className="modal-card-body">
+                                <p><strong>User Email:</strong> {selectedOrder.userEmail}</p>
+                                <p><strong>Total:</strong> £{selectedOrder.total}</p>
+                                <p><strong>Date:</strong> {formatDate(selectedOrder.date)}</p>
+                                <div>
+                                    <h2 className="title is-5">Items Purchased:</h2>
+                                    {selectedOrder.items.map((item, index) => (
+                                        <div key={index} className="box">
+                                            <div className="columns">
+                                                <div className="column is-one-quarter">
+                                            <figure className="image is-64x64">
+                                                <Image 
+                                                src={item.Image} 
+                                                alt={item.Model}
+                                                width={30}
+                                                height={60}
+                                                unoptimized={true} />
+                                            </figure>
+                                            </div>
+                                            <div className="column">
+                                            <p><strong>Model:</strong> {item.Model}</p>
+                                            <p><strong>Make:</strong> {item.Make}</p>
+                                            <p><strong>Features:</strong> {item.Features}</p>
+                                            <p><strong>Price:</strong> £{item.Price}</p>
+                                            <p><strong>Quantity:</strong> {item.quantity}</p>
+                                            </div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </section>
+                            <footer className="modal-card-foot">
+                                <button className="button is-success" onClick={closeModal}>Close</button>
+                            </footer>
+                        </div>
+                    </div>
+                )}
+                </div>
+            </section>
+        );
+    };
+    
+    export default OrdersPage;

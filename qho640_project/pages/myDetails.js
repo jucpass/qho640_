@@ -31,11 +31,17 @@ function MyDetails() {
             <section className="section is-medium">
                 <div className="container">
                     <h1 className="title">My Details</h1>
+                    <div className = 'columns'>
+                        <div className = 'column'></div>
+                        <div className = 'column'>
                     <UserCard
                         key={userDetails.id}
                         user={userDetails}
                         showAdminControls={role === "admin"}
                     />
+                    </div>
+                    <div className = 'column'></div>    
+                    </div>
                 </div>
             </section>
         ) : (

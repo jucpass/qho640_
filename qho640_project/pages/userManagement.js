@@ -1,6 +1,6 @@
 import React from 'react';
 import UserCard from '../app/users/usersCards';
-import useUsers from '../app/database/users';
+import {useUsers} from '../app/database/users';
 import { doc, deleteDoc } from 'firebase/firestore';
 import { db } from '../app/firebaseConfig';
 import useProtectRoute from "../app/utils/useProtectRoute";
@@ -25,7 +25,11 @@ const UserList = () => {
     };
 
     return (
+
+        
         role === 'admin' ? (
+            <section className="section is-small">
+                <h1 className="title has-text-centered">User Management</h1>
         <div>
             {users.map(user => (
                 <UserCard
@@ -36,6 +40,7 @@ const UserList = () => {
                 />
             ))}
         </div>
+        </section>
         ) : (
             <div>
                 <h1>Access Denied</h1>

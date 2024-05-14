@@ -40,10 +40,6 @@ function CartDisplay({user}) {
         setIsModalOpen(false);
     };
 
-    //const handleCheckout = () => {
-    //    router.push('/checkout');
-    //};
-
     const handleRemove = (id) => {
         removeFromCart(id);
     };

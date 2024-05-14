@@ -14,13 +14,6 @@ export const AuthContextProvider = ({ children }) => {
     const [loading, setLoading] = useState(true);
 
     const firestore = getFirestore();
-
-    /* working but not saving user details to Firestore
-    const googleSignIn = () => {
-        const provider = new GoogleAuthProvider();
-        signInWithPopup(auth, provider);
-    };
-    */
     const googleSignIn = async () => {
         const provider = new GoogleAuthProvider();
         try {

@@ -1,6 +1,5 @@
 
 import React, { useState } from 'react';
-import { checkCurrentStock } from '../database/products';
 import Image from 'next/image';
 import { UserAuth } from '../auth/AuthContext'; 
 import { useCart } from '../checkout/cartContext';

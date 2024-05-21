@@ -73,10 +73,6 @@ const Page = () => {
                             <FontAwesomeIcon icon={ faGoogle } />
                                 Connect with Google
                             </button>
-                            <button className="px-4 py-2 text-white bg-black rounded-md hover:bg-gray-800 transition-colors duration-300">
-                                <FontAwesomeIcon icon={ faApple } />&nbsp;
-                                Connect with Apple
-                            </button>
                         </div>
                         <p className="text-center text-gray-600 mb-6">or</p>
                         <form onSubmit={handleSubmit}>

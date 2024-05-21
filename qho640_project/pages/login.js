@@ -39,13 +39,6 @@ function LoginPage() {
     }
   };
 
-  const handleSignOut = async () => {
-    try {
-      await logOut();
-    } catch (error) {
-      console.error(error);
-    }
-  };
 
   useEffect(() => {
     const checkAuthentication = async () => {
@@ -78,10 +71,6 @@ function LoginPage() {
               <button onClick={handleSignIn} className="px-4 py-2 mr-2 text-white bg-red-500 rounded-md hover:bg-red-600 transition-colors duration-300">
                 <FontAwesomeIcon icon={faGoogle}/>&nbsp;
                 Sign in with Google
-              </button>
-              <button className="px-4 py-2 text-white bg-black rounded-md hover:bg-gray-800 transition-colors duration-300">
-                <FontAwesomeIcon icon={faApple}/>&nbsp;
-                Sign in with Apple
               </button>
             </div>
             <p className="text-center text-gray-600 mb-4">or</p>

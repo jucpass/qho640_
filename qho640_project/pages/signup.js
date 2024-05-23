@@ -4,6 +4,7 @@ import { UserAuth } from "../app/auth/AuthContext";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGoogle } from '@fortawesome/free-brands-svg-icons';
 import { faApple } from '@fortawesome/free-brands-svg-icons';
+import { useRouter } from 'next/router';
 
 //** ADJUST DELAYED REDIRECT FROM EMAIL LOGIN */
 
@@ -20,7 +21,7 @@ const Page = () => {
         try {
             await signUp(firstName, email, password);
             console.log("User signed up successfully");
-            // Redirect to dashboard
+            router.push('/');
         } catch (error) {
             console.error("Signup failed:", error);
         }
@@ -57,13 +58,7 @@ const Page = () => {
                     <p>Loading...</p>
                 ) : user ? (
                     <div className="flex items-center justify-center space-x-4">
-                        <p className="text-gray-800 font-semibold">You have signed up successfully</p>
-                        <button
-                            onClick={handleSignOut}
-                            className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors duration-300"
-                        >
-                            Sign Out
-                        </button>
+                        <p className="text-gray-800 font-semibold">Welcome to Connect Shop</p>
                     </div>
                 ) : (
                     <div>

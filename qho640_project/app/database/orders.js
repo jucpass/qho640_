@@ -1,3 +1,5 @@
+/* working but using direct Firestore fetch 
+
 import { useState, useEffect, useCallback } from "react";
 import { db } from "../firebaseConfig";
 import { collection, query, where, getDocs } from "firebase/firestore";
@@ -36,3 +38,41 @@ export default function useOrders(user, role) {
 
     return { orders, refreshOrders: fetchData };
 }
+*/
+
+import { useState, useEffect, useCallback } from "react";
+import { UserAuth } from "../auth/AuthContext";
+import { fetchOrdersFromAPI } from "../utils/fetchOrdersFromAPI";
+
+
+function useOrders() {
+    const { user, role, fetchIdToken } = UserAuth();
+    const [orders, setOrders] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
+
+    const fetchData = useCallback(async () => {
+        if (!user) return;
+
+        setLoading(true);
+        setError(null);
+        try {
+            const token = await fetchIdToken();
+            const ordersList = await fetchOrdersFromAPI(user, role, token);
+            setOrders(ordersList);
+        } catch (error) {
+            setError(error.message);
+        } finally {
+            setLoading(false);
+        }
+    }, [user, role, fetchIdToken]);
+
+    useEffect(() => {
+        fetchData();
+    }, [fetchData]);
+
+    return { orders, refreshOrders: fetchData, loading, error };
+}
+
+export default useOrders;
+

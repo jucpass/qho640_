@@ -31,7 +31,7 @@ export const AuthContextProvider = ({ children }) => {
                     email: user.email,
                     firstName: user.displayName,
                     role: "user",  // default role
-                    balance: 10000 
+                    balance: 10000 // default balance
                 });
                 setRole("user");
             } else {
@@ -125,8 +125,19 @@ export const AuthContextProvider = ({ children }) => {
         return <div>Loading...</div>;
     }
 
+    const fetchIdToken = async () => { 
+        if (!user) return null;
+        try {
+            const token = await user.getIdToken(); // Retrieves the Firebase ID token
+            return token;
+        } catch (error) {
+            console.error("Failed to get ID token:", error);
+            return null;
+        }
+    };
+
     return (
-        <AuthContext.Provider value={{ user, role, googleSignIn, logOut, signUp, signInWithEmail }}>
+        <AuthContext.Provider value={{ user, role, googleSignIn, logOut, signUp, signInWithEmail, fetchIdToken }}>
             {!loading && children}
         </AuthContext.Provider>
     );

@@ -6,46 +6,48 @@ import { faGoogle } from '@fortawesome/free-brands-svg-icons';
 import { faApple } from '@fortawesome/free-brands-svg-icons';
 import { useRouter } from 'next/router';
 
-//** ADJUST DELAYED REDIRECT FROM EMAIL LOGIN */
+const Page = () => { 
+    const { user, logOut, googleSignIn, signUp } = UserAuth(); // Get the current user
+    const [loading, setLoading] = useState(true); // State to store loading status
 
-const Page = () => {
-    const { user, logOut, googleSignIn, signUp } = UserAuth();
-    const [loading, setLoading] = useState(true);
+    const [email, setEmail] = useState(''); // State to store email
+    const [password, setPassword] = useState(''); // State to store password
+    const [firstName, setFirstName] = useState(''); // State to store first name
 
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [firstName, setFirstName] = useState('');
-
-    const handleSubmit = async (event) => {
-        event.preventDefault();
+    
+    const handleSubmit = async (event) => { // Function to handle sign up
+        event.preventDefault(); // Prevent default form submission
         try {
-            await signUp(firstName, email, password);
+            await signUp(firstName, email, password); // Sign up with email and password
             console.log("User signed up successfully");
-            router.push('/');
+            router.push('/');  // Redirect to home page
         } catch (error) {
             console.error("Signup failed:", error);
         }
     };
 
+    // Effect to check authentication
     useEffect(() => {
         const checkAuthentication = async () => {
-            await new Promise((resolve) => setTimeout(resolve, 50));
-            setLoading(false);
+            await new Promise((resolve) => setTimeout(resolve, 50)); // Wait for 50ms
+            setLoading(false); // Set loading to false
         };
-        checkAuthentication();
+        checkAuthentication(); // Call the function
     }, [user]);
 
+    // Function to handle sign in with Google
     const handleSignIn = async () => {
         try {
-            await googleSignIn();
+            await googleSignIn(); // Sign in with Google
         } catch (error) {
             console.log(error)
         }
     };
 
+    // Function to handle sign out
     const handleSignOut = async () => {
         try {
-            await logOut()
+            await logOut() // Log out the user
         } catch (error) {
             console.log(error)
         }

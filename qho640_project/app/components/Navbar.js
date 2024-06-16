@@ -9,11 +9,12 @@ import { faCartShopping } from '@fortawesome/free-solid-svg-icons';
 
 const Navbar = () => {
 
-    const { user, role, logOut } = UserAuth();
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
-    const [loading, setLoading] = useState(true);
-    const { itemCount, total } = useCart();
+    const { user, role, logOut } = UserAuth(); // Get the current user and role
+    const [isLoggedIn, setIsLoggedIn] = useState(false); // State to store login status
+    const [loading, setLoading] = useState(true); // State to store loading status
+    const { itemCount, total } = useCart();     // Get total items and total price from cart context
 
+    // Function to handle sign out
     const handleSignOut = async () => {
         try {
             await logOut();
@@ -22,11 +23,13 @@ const Navbar = () => {
         }
     };
 
+        // Effect to update login status
     useEffect(() => {
         const userLoggedIn = !!user;
         setIsLoggedIn(userLoggedIn);
     }, [user]);
 
+        // Effect to check authentication
     useEffect(() => {
         const checkAuthentication = async () => {
             await new Promise(resolve => setTimeout(resolve, 50));

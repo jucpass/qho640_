@@ -5,24 +5,21 @@ import Image from 'next/image';
 // https://bulma.io/documentation/components/modal/
 
     const OrdersPage = () => {
-        //const { user, role } = UserAuth();
-        //const { orders, refreshOrders } = useOrders(user, role);
-        //const { orders, refreshOrders, loading, error } = useOrders(user, role);
-        const { orders, refreshOrders, loading, error } = useOrders();
-        const [isModalOpen, setIsModalOpen] = useState(false);
-        const [selectedOrder, setSelectedOrder] = useState(null);
+        const { orders, refreshOrders, loading, error } = useOrders(); // Get orders, refreshOrders, loading, and error from useOrders hook
+        const [isModalOpen, setIsModalOpen] = useState(false); // State to store modal status
+        const [selectedOrder, setSelectedOrder] = useState(null); // State to store selected order
         
-    
+        // Function to handle order click
         const handleOrderClick = (order) => {
-            setSelectedOrder(order);
-            setIsModalOpen(true);
+            setSelectedOrder(order); // Set the selected order
+            setIsModalOpen(true); // Open the modal
         };
     
         const closeModal = () => {
             setIsModalOpen(false);
         };
 
-        if (loading) return <div>Loading orders...</div>;
+        if (loading) return <div>Loading orders...</div>; // If loading, return loading message
         if (error) return <div>Error loading orders: {error}</div>;
 
         return (

@@ -5,24 +5,24 @@ import { db } from '../app/firebaseConfig';
 import { UserAuth } from '../app/auth/AuthContext'; 
 
 function MyDetails() {
-    const { user: authUser, role } = UserAuth();
-    const [userDetails, setUserDetails] = useState(null);
+    const { user: authUser, role } = UserAuth(); // Get the current user and role
+    const [userDetails, setUserDetails] = useState(null);  // State to store user details
 
 
-
+    // Function to fetch user details
     useEffect(() => {
-        if (authUser) {
-            const fetchUserDetails = async () => {
-                const userRef = doc(db, "users", authUser.uid);
-                const docSnap = await getDoc(userRef);
-                if (docSnap.exists()) {
-                    setUserDetails(docSnap.data());
+        if (authUser) { // If user is logged in
+            const fetchUserDetails = async () => { // Fetch user details
+                const userRef = doc(db, "users", authUser.uid); // Get the user document
+                const docSnap = await getDoc(userRef); // Get the document snapshot
+                if (docSnap.exists()) { // If the document exists
+                    setUserDetails(docSnap.data()); // Set the user details
                 } else {
                     console.log("No such document!");
                 }
             };
 
-            fetchUserDetails();
+            fetchUserDetails(); // Call the fetchUserDetails function
         }
     }, [authUser]);
 

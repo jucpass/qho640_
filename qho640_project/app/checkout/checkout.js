@@ -10,26 +10,27 @@ import { checkCurrentStock, updateStock } from '../database/products';
 
 function CheckoutModal({ isOpen, onClose, total, cart, user }) {
 
-    const [cardNumber, setCardNumber] = useState('');
-    const [expDate, setExpDate] = useState('');
-    const [cvv, setCvv] = useState('');
-    const { clearCart } = useCart();
+    const [cardNumber, setCardNumber] = useState(''); // State to store card number
+    const [expDate, setExpDate] = useState(''); // State to store expiration date
+    const [cvv, setCvv] = useState(''); // State to store CVV
+    const { clearCart } = useCart(); // Function to clear the cart
 
     useEffect(() => {
-        console.log("Current user in CheckoutModal:", user);
-    }, [user]);
+        console.log("Current user in CheckoutModal:", user); 
+    }, [user]); 
 
+    // Function to handle form submission
     const handleSubmit = async (event) => {
-        event.preventDefault();
-        if (!user) {
+        event.preventDefault(); // Prevent default form submission
+        if (!user) { 
             console.error("No user is signed in.");
             alert('Please log in to proceed.');
-            return; 
+            return; // Return if no user is signed in
         }
     
         // Check if user has enough balance
         const currentBalance = await checkBalance(user.uid);
-        if (total > currentBalance) {
+        if (total > currentBalance) { 
             alert('Insufficient balance to complete this order.');
             return;
         }
@@ -37,7 +38,7 @@ function CheckoutModal({ isOpen, onClose, total, cart, user }) {
         // Check if all items are in stock
         for (const item of cart) {
             const stock = await checkCurrentStock(item.id);
-            if (item.quantity > stock) {
+            if (item.quantity > stock) { // If quantity is more than stock
                 alert(`Insufficient stock for ${item.name}.`);
                 return;
             }
@@ -46,10 +47,11 @@ function CheckoutModal({ isOpen, onClose, total, cart, user }) {
         // Deduct the total from the user's balance and update the stock
         await updateBalance(user.uid, currentBalance - total);
         for (const item of cart) {
-            const stock = await checkCurrentStock(item.id);
-            await updateStock(item.id, stock - item.quantity);
+            const stock = await checkCurrentStock(item.id); // Get current stock
+            await updateStock(item.id, stock - item.quantity); // Update stock
         }
-    
+        
+        // Save the order to the database
         try {
             const docRef = await addDoc(collection(db, "orders"), {
                 userId: user.uid,

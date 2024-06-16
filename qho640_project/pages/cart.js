@@ -4,6 +4,7 @@ import CartDisplay from '../app/checkout/cartCards';
 import { UserAuth } from '../app/auth/AuthContext'; 
 
 const Cart = () => {
+    // Get the current user
     const { user } = UserAuth();
 
     useEffect(() => {

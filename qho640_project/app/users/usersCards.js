@@ -2,19 +2,21 @@ import React, { useState } from 'react';
 import { doc, updateDoc } from 'firebase/firestore';
 import { db } from '../firebaseConfig'; 
 
+// Function to display user cards
 const UserCard = ({ user, onDelete, showAdminControls = false }) => {
-    const [role, setRole] = useState(user.role);
-    const [pendingRole, setPendingRole] = useState(user.role); 
-    const [balance, setBalance] = useState(user.balance);
+    const [role, setRole] = useState(user.role); // State to store role
+    const [pendingRole, setPendingRole] = useState(user.role);  // State to store pending role
+    const [balance, setBalance] = useState(user.balance); // State to store balance
 
+    // Function to handle role change
     const handleRoleChange = async (newRole) => {
-        if (newRole === role) return; 
-        const confirmChange = window.confirm(`Are you sure you want to change ${user.firstName}'s role? This could grant or revoke privileges for this user.`);
-        if (confirmChange) {
+        if (newRole === role) return; // Return if the role is the same
+        const confirmChange = window.confirm(`Are you sure you want to change ${user.firstName}'s role? This could grant or revoke privileges for this user.`); // Confirm role change
+        if (confirmChange) { // If confirmed
             try {
-                const userRef = doc(db, 'users', user.id);
-                await updateDoc(userRef, { role: newRole });
-                setRole(newRole); 
+                const userRef = doc(db, 'users', user.id); // Get the user document
+                await updateDoc(userRef, { role: newRole }); // Update the role
+                setRole(newRole);  // Set the new role
                 console.log('Role updated successfully');
             } catch (error) {
                 console.error('Failed to update role:', error);
@@ -26,14 +28,15 @@ const UserCard = ({ user, onDelete, showAdminControls = false }) => {
         }
     };
 
+    // Function to handle balance change
     const handleBalanceChange = async (newBalance) => {
-        if (isNaN(newBalance) || newBalance === user.balance) return;
-        const confirmChange = window.confirm(`Are you sure you want to update the balance for ${user.firstName}?`);
-        if (confirmChange) {
+        if (isNaN(newBalance) || newBalance === user.balance) return; // Return if balance is not a number or is the same
+        const confirmChange = window.confirm(`Are you sure you want to update the balance for ${user.firstName}?`); // Confirm balance change
+        if (confirmChange) { // If confirmed
             try {
-                const userRef = doc(db, 'users', user.id);
-                await updateDoc(userRef, { balance: parseFloat(newBalance) });
-                setBalance(newBalance);
+                const userRef = doc(db, 'users', user.id); // Get the user document
+                await updateDoc(userRef, { balance: parseFloat(newBalance) }); // Update the balance
+                setBalance(newBalance); // Set the new balance
                 console.log('Balance updated successfully');
             } catch (error) {
                 console.error('Failed to update balance:', error);

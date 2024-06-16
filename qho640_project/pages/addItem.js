@@ -7,25 +7,28 @@ import { db } from "../app/firebaseConfig";
 import { collection, getDocs } from "firebase/firestore";
 
 const AddProducts = () => {
-  const { role } = useProtectRoute('admin');
-  const [products, setProducts] = useState([]);
+  const { role } = useProtectRoute('admin'); // Get the current user role
+  const [products, setProducts] = useState([]); // State to store products
 
+  // Function to fetch products from the database
   useEffect(() => {
-      const fetchProducts = async () => {
-          const querySnapshot = await getDocs(collection(db, "productsCategories"));
-          const productsArray = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-          setProducts(productsArray);
+      const fetchProducts = async () => { // Fetch products from the database
+          const querySnapshot = await getDocs(collection(db, "productsCategories")); // Get all documents from the collection
+          const productsArray = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })); // Map the documents to an array
+          setProducts(productsArray); // Set the products state
       };
 
-      fetchProducts();
+      fetchProducts(); // Call the fetchProducts function
   }, []);
 
-  const refreshProducts = async () => {
-      const querySnapshot = await getDocs(collection(db, "productsCategories"));
-      const productsArray = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-      setProducts(productsArray);
+  // Function to refresh products
+  const refreshProducts = async () => { // Refresh products
+      const querySnapshot = await getDocs(collection(db, "productsCategories")); // Get all documents from the collection
+      const productsArray = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })); // Map the documents to an array
+      setProducts(productsArray); // Set the products state
   };
-  
+
+  // Return the product management page
     return (
 
       role === 'admin' ? (

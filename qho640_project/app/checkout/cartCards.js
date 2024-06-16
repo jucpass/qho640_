@@ -2,7 +2,6 @@
 "use client";
 import React, {useState, useEffect} from "react";
 import { useCart } from "../checkout/cartContext";
-import { useRouter } from 'next/router';
 import Image from 'next/image';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash, faMinus, faPlus, faCreditCard } from '@fortawesome/free-solid-svg-icons';
@@ -13,19 +12,18 @@ import { checkCurrentStock } from '../database/products';
 
 function CartDisplay({user}) {
 
-    const { cart, total, removeFromCart, decreaseQuantity, increaseQuantity } = useCart();
-    const router = useRouter();
-    const [isModalOpen, setIsModalOpen] = useState(false);
+    const { cart, total, removeFromCart, decreaseQuantity, increaseQuantity } = useCart(); // Access cart context
+    const [isModalOpen, setIsModalOpen] = useState(false); // State to manage modal visibility
 
-    
+    // Effect to log the current user
     useEffect(() => {
         console.log("Current user in cartCards:", user);
     }, [user]);
-
+    // Handle the checkout process
     const handleCheckout = () => {
-        if (user) {
-            if (cart.length > 0) {
-                setIsModalOpen(true);
+        if (user) { // Check if user is logged in
+            if (cart.length > 0) { // Check if the cart is not empty
+                setIsModalOpen(true); // Open the checkout modal
             } else {
                 console.error("The cart is empty");
                 alert("Please add some items to your cart before checkout."); 
@@ -36,30 +34,34 @@ function CartDisplay({user}) {
         }
     };
 
+    // Function to close the checkout modal
     const closeModal = () => {
         setIsModalOpen(false);
     };
 
+    // Function to remove an item from the cart
     const handleRemove = (id) => {
         removeFromCart(id);
     };
 
+    // Function to increase the quantity of an item in the cart
     const handleIncrease = async (id) => {
-        const currentStock = await checkCurrentStock(id);
-        const currentItem = cart.find(item => item.id === id);
+        const currentStock = await checkCurrentStock(id); // Check the current stock of the item
+        const currentItem = cart.find(item => item.id === id); // Find the item in the cart
     
-        if (currentItem.quantity < currentStock) {
-            increaseQuantity(id);
+        if (currentItem.quantity < currentStock) { // Check if the quantity is less than the stock
+            increaseQuantity(id); // Increase the quantity of the item
         } else {
             alert("Cannot add more items. Stock limit reached.");
         }
     };
 
+    // Function to decrease the quantity of an item in the cart
     const handleDecrease = (id) => {
-        decreaseQuantity(id);
+        decreaseQuantity(id); // Decrease the quantity of the item
     }
 
-
+    
     return (
         <div className="columns">
             <div className="column"></div>

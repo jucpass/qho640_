@@ -14,10 +14,10 @@ if (!admin.apps.length) {
     });
 }
 */
-
+// Initialize Firebase Admin SDK
 if (!admin.apps.length) {
-    admin.initializeApp({
-        credential: admin.credential.cert(
+    admin.initializeApp({ // Initialize Firebase Admin SDK
+        credential: admin.credential.cert( // Get the credentials
             {
                 "type": "service_account",
                 "project_id": "qho640-dd856",
@@ -32,13 +32,13 @@ if (!admin.apps.length) {
                 "universe_domain": "googleapis.com"
               }
         ),
-        databaseURL: "https://qho640-dd856.firebaseio.com"
+        databaseURL: "https://qho640-dd856.firebaseio.com" // Get the database URL
     });
 }
 
 
 
-const dbAdmin = admin.firestore();
+const dbAdmin = admin.firestore(); // Get a Firestore instance
 
 export {dbAdmin};
 

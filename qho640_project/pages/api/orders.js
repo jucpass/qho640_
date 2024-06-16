@@ -2,35 +2,37 @@
 import {dbAdmin} from '../../app/firebaseConfigAdmin'; 
 
 
+// Function to fetch orders from the Firestore database
 export default async function handler(req, res) {
-    const { userId, role } = req.query; 
+    const { userId, role } = req.query;  // Get the userId and role from the query parameters
 
     try {
         // Create a query based on user role; if admin, fetch all orders; if user, fetch specific user orders
-        let query = dbAdmin.collection('orders');
-        if (role !== 'admin') {
-            query = query.where('userId', '==', userId);
+        let query = dbAdmin.collection('orders'); // Get the orders collection
+        if (role !== 'admin') { // If user is not an admin
+            query = query.where('userId', '==', userId); // Fetch orders for the user
         }
 
-        const snapshot = await query.get();
-        const orders = [];
+        const snapshot = await query.get(); // Get the orders collection
+        const orders = [];  // Array to store orders
 
-        if (snapshot.empty) {
+        if (snapshot.empty) { // If no orders are found
             console.log('No matching documents.');
-            res.status(200).json({ orders: [] });
+            res.status(200).json({ orders: [] }); // Return an empty array
             return;
         }
 
-        snapshot.forEach(doc => {
-            const order = {
-                id: doc.id,
-                ...doc.data(),
+        // Loop through each document and add it to the orders array
+        snapshot.forEach(doc => { 
+            const order = { // Order object
+                id: doc.id, // Order ID
+                ...doc.data(), // Order data
                 date: doc.data().date.toDate().toISOString() // Convert Firestore Timestamp readable date
             };
-            orders.push(order);
+            orders.push(order); // Add the order to the orders array
         });
 
-        res.status(200).json({ orders: orders });
+        res.status(200).json({ orders: orders }); // Return the orders array
 
     } catch (error) {
         console.error('Error fetching orders:', error);

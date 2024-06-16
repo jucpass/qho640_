@@ -7,7 +7,8 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
 function IndexPage() {
-    const { user } = UserAuth();
+    const { user } = UserAuth(); // Get the current user
+    
   useEffect(() => {
     console.log("Current user in Index:", user);
 }, [user]);

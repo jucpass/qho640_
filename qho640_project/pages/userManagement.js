@@ -8,15 +8,16 @@ import useProtectRoute from "../app/utils/useProtectRoute";
 
 // CLEAN THE CODE MOVE LOGIC TO HOOKS
 const UserList = () => {
-    const { users, refreshUsers } = useUsers();
-    const { role } = useProtectRoute('admin');
+    const { users, refreshUsers } = useUsers(); // Get users and refreshUsers function
+    const { role } = useProtectRoute('admin'); // Get the current user role
 
+    // Function to handle user deletion
     const handleDelete = async (userId) => {
         if (window.confirm('Are you sure you want to delete this user?')) {
             try {
-                const userRef = doc(db, 'users', userId);
-                await deleteDoc(userRef);
-                refreshUsers();  
+                const userRef = doc(db, 'users', userId); // Get the user document
+                await deleteDoc(userRef); // Delete the user document
+                refreshUsers();   // Refresh the user list
             } catch (error) {
                 console.error('Error deleting user:', error);
                 alert('Failed to delete user. Please try again.');

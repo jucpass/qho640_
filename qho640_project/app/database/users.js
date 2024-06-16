@@ -5,18 +5,20 @@ import { db } from '../firebaseConfig';
 const useUsers = () => {
     const [users, setUsers] = useState([]);
 
+    // Function to fetch users from the database
     const fetchUsers = useCallback(async () => {
-        const userCollectionRef = collection(db, 'users');
-        const userDocs = await getDocs(userCollectionRef);
+        const userCollectionRef = collection(db, 'users'); // Get the users collection
+        const userDocs = await getDocs(userCollectionRef); // Get all documents
         const userList = userDocs.docs.map(doc => {
             console.log(doc.data());  // Log to see all data retrieved
             return { id: doc.id, ...doc.data() };
         });
-        setUsers(userList);
+        setUsers(userList); // Set the users state
     }, []);
 
+    // Fetch users on component mount
     useEffect(() => {
-        fetchUsers();
+        fetchUsers(); 
     }, [fetchUsers]);
 
     return { users, refreshUsers: fetchUsers };
@@ -24,10 +26,10 @@ const useUsers = () => {
 
 const checkBalance = async (userId) => {
     try {
-        const userRef = doc(db, 'users', userId);
-        const userDoc = await getDoc(userRef);
-        if (userDoc.exists()) {
-            return userDoc.data().balance;
+        const userRef = doc(db, 'users', userId); // Get the user document
+        const userDoc = await getDoc(userRef); // Get the document snapshot
+        if (userDoc.exists()) { // If the document exists
+            return userDoc.data().balance; // Return the balance
         } else {
             console.log("User not found");
             return null; 
@@ -38,11 +40,12 @@ const checkBalance = async (userId) => {
     }
 };
 
+// Function to update the balance of a user
 const updateBalance = async (userId, newBalance) => {
     try {
-        const userRef = doc(db, 'users', userId);
-        await updateDoc(userRef, {
-            balance: newBalance
+        const userRef = doc(db, 'users', userId); // Get the user document
+        await updateDoc(userRef, { // Update the balance
+            balance: newBalance // Set the new balance
         });
     } catch (error) {
         console.error("Failed to update user balance:", error);

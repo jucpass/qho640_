@@ -3,33 +3,36 @@ import { db } from '../firebaseConfig';
 import { collection, addDoc } from "firebase/firestore"; 
 import { UserAuth } from '../auth/AuthContext'; 
 
+// Function to add a new item to the database
 export default function AddItemPage( { refreshProducts } ) {
-    const [Features, setFeatures] = useState('');
-    const [Image, setImage] = useState('');
-    const [Make, setMake] = useState('');
-    const [Model, setModel] = useState('');
-    const [Price, setPrice] = useState('');
-    const [Stock, setStock] = useState('');
+    const [Features, setFeatures] = useState(''); // State to store features
+    const [Image, setImage] = useState(''); // State to store image URL
+    const [Make, setMake] = useState(''); // State to store make
+    const [Model, setModel] = useState(''); // State to store model
+    const [Price, setPrice] = useState(''); // State to store price
+    const [Stock, setStock] = useState(''); // State to store stock
     const { user, role } = UserAuth(); // Context to access user and role
 
+    // Check if the user is an admin
     useEffect(() => {
         if (role !== 'admin') {
             alert('You are not authorized to view this page.');
         }
     }, [role]);
 
+    // Function to handle form submission
     const handleSubmit = async (e) => {
-        e.preventDefault();
+        e.preventDefault(); // Prevent default form submission
         
-        if (role === 'admin' && Features && Image && Make && Model && Price && Stock) {
+        if (role === 'admin' && Features && Image && Make && Model && Price && Stock) { // Check if all fields are filled
 
-            if (Number(Price) <= 0 || Number(Stock) <= 0){
+            if (Number(Price) <= 0 || Number(Stock) <= 0){ // Check if price or stock is less than zero
                 alert('Price and Stock could not be less than zero.');
                 return;
             }
     
             try {
-                const docRef = await addDoc(collection(db, "productsCategories"), {
+                const docRef = await addDoc(collection(db, "productsCategories"), { // Add a new document to the collection
                     Features,
                     Image,
                     Make,
@@ -39,9 +42,9 @@ export default function AddItemPage( { refreshProducts } ) {
                 });
                 console.log("Document written with ID: ", docRef.id);
                 alert('Product added successfully!');
-                refreshProducts(); 
-                setFeatures('');
-                setImage('');
+                refreshProducts();  // Refresh the product list after adding a new product
+                setFeatures(''); // Clear the form fields
+                setImage('');   // Clear the form fields
                 setMake('');
                 setModel('');
                 setPrice('');

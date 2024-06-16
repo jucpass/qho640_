@@ -14,11 +14,11 @@ const firebaseConfig = {
 };
 
 
-initializeApp(firebaseConfig);
+initializeApp(firebaseConfig); // Initialize Firebase
 
 
-const db = getFirestore();  
-const auth = getAuth();  
+const db = getFirestore();   // Get a Firestore instance
+const auth = getAuth();     // Get an Auth instance
 
 export { auth, db};
 

@@ -6,20 +6,22 @@ import { useCart } from '../checkout/cartContext';
 import { db } from '../firebaseConfig';
 import { updateDoc, deleteDoc, doc } from "firebase/firestore";
 
+// Function to display product cards
 function ProductCards({ products = [], refreshProducts }) {
-    const { addToCart } = useCart();
-    const { role } = UserAuth();
-    const [editingStates, setEditingStates] = useState({});
+    const { addToCart } = useCart();  // Function to add to cart
+    const { role } = UserAuth(); // Get the current user role
+    const [editingStates, setEditingStates] = useState({}); // State to store editing states
 
 
+    // Function to handle product deletion
     const handleDelete = async (productId) => {
-        if (role === 'admin') {
-            console.log('Deleting product with ID: ', productId);
+        if (role === 'admin') { // Check if user is an admin
+            console.log('Deleting product with ID: ', productId); 
             if (window.confirm('Are you sure you want to delete this product?')) {
                 try {
-                    const docRef = doc(db, 'productsCategories', productId);
-                    await deleteDoc(docRef);
-                    console.log('Product successfully deleted!');
+                    const docRef = doc(db, 'productsCategories', productId); // Get the product document
+                    await deleteDoc(docRef); // Delete the document
+                    console.log('Product successfully deleted!'); 
                     alert('Product has been successfully deleted.'); 
                     refreshProducts(); // Refresh the product list after deletion
                 } catch (error) {
@@ -34,38 +36,40 @@ function ProductCards({ products = [], refreshProducts }) {
         }
     };
 
-    const handleEditChange = (product, key, value) => {
-        setEditingStates(prev => ({
-            ...prev,
-            [product.id]: {
-                ...prev[product.id],
-                [key]: value
+    // Function to handle changes in the edit form
+    const handleEditChange = (product, key, value) => { // Handle changes in the edit form
+        setEditingStates(prev => ({ // Update the editing state
+            ...prev, // Keep the previous state
+            [product.id]: { // Update the product with the new value
+                ...prev[product.id], // Keep the previous product state
+                [key]: value // Update the key with the new value
+            }
+        }));
+    };
+    // Function to toggle edit mode
+    const toggleEdit = (productId) => { // Toggle edit mode
+        setEditingStates(prev => ({ // Update the editing state
+            ...prev, // Keep the previous state
+            [productId]: { // Update the product with the new value
+                isEditing: !prev[productId]?.isEditing, // Toggle the editing state
+                ...products.find(p => p.id === productId) // Get the product by ID
             }
         }));
     };
 
-    const toggleEdit = (productId) => {
-        setEditingStates(prev => ({
-            ...prev,
-            [productId]: {
-                isEditing: !prev[productId]?.isEditing,
-                ...products.find(p => p.id === productId)
-            }
-        }));
-    };
-
+    // Function to save changes
     const saveChanges = async (productId) => {
-        const editedProduct = editingStates[productId];
-        console.log('Saving changes for product: ', editedProduct);
-        try {
-            const docRef = doc(db, 'productsCategories', productId);
-            await updateDoc(docRef, editedProduct);
+        const editedProduct = editingStates[productId]; // Get the edited product
+        console.log('Saving changes for product: ', editedProduct); 
+        try { // Try to update the product
+            const docRef = doc(db, 'productsCategories', productId); // Get the product document
+            await updateDoc(docRef, editedProduct); // Update the document
             console.log('Product updated successfully');
             refreshProducts(); // Refresh the product list after updating
-            setEditingStates(prev => {
-                const newState = { ...prev };
-                delete newState[productId];
-                return newState;
+            setEditingStates(prev => { // Update the editing state
+                const newState = { ...prev }; // Create a new state
+                delete newState[productId]; // Delete the product from the state
+                return newState; // Return the new state
             }
         );
         } catch (error) {

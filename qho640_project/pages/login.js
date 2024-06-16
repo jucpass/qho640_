@@ -7,52 +7,55 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGoogle, faApple } from '@fortawesome/free-brands-svg-icons';
 
 function LoginPage() {
-  const { user, googleSignIn, logOut, signInWithEmail } = UserAuth();
-  const [loading, setLoading] = useState(true);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const router = useRouter();
+  const { user, googleSignIn, logOut, signInWithEmail } = UserAuth(); // Get the current user
+  const [loading, setLoading] = useState(true); // State to store loading status
+  const [email, setEmail] = useState(''); // State to store email
+  const [password, setPassword] = useState(''); // State to store password
+  const router = useRouter(); // Get the router
 
+  // Function to handle sign in with Google
   const handleSignIn = async () => {
-    setLoading(true);
+    setLoading(true); // Set loading to true
     try {
-      await googleSignIn();
+      await googleSignIn(); 
       if (user) // prevents the premature redirect
-        router.push('/');
+        router.push('/'); // Redirect to home page
     } catch (error) {
       console.error(error);
     } finally {
-      setLoading(false);
+      setLoading(false); // Set loading to false
     }
   };
 
+  // Function to handle email sign in
   const handleEmailSignIn = async (event) => {
     event.preventDefault(); // Prevent form from refreshing the page
-    setLoading(true);
+    setLoading(true); // Set loading to true
     try {
-      await signInWithEmail(email, password);
-      router.push('/');
+      await signInWithEmail(email, password); // Sign in with email and password
+      router.push('/'); // Redirect to home page
     } catch (error) {
       console.error(error);
-    } finally {
+    } finally { // Set loading to false
       setLoading(false);
     }
   };
 
-
+  // Effect to check authentication
   useEffect(() => {
-    const checkAuthentication = async () => {
-      await new Promise((resolve) => setTimeout(resolve, 50));
+    const checkAuthentication = async () => { // Function to check authentication
+      await new Promise((resolve) => setTimeout(resolve, 50)); // Wait for 50ms
       setLoading(false);
     };
-    checkAuthentication();
+    checkAuthentication(); // Call the function
   }, [user]);
 
+  // Effect to redirect to home page if user is logged in
   useEffect(() => {
-    if (user && !loading) {
-      router.push('/');
+    if (user && !loading) { // If user is logged in and loading is false
+      router.push('/'); // Redirect to home page
     }
-  }, [user, loading, router]);
+  }, [user, loading, router]); // Dependency array
 
   return (
     <section className="section is-medium">
